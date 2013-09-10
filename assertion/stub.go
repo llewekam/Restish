@@ -8,12 +8,12 @@ type Stuber interface {
 
 // Struct for containin the function call count data
 type CallCount struct {
-	funcName string
+	funcName  string
 	callCount int
 }
 
-func NewStub() *Stub{
-	callCount := make([]CallCount,0)
+func NewStub() *Stub {
+	callCount := make([]CallCount, 0)
 	stub := Stub{callCount}
 
 	return &stub
@@ -45,6 +45,6 @@ func (stub *Stub) Register(name string) {
 		}
 	}
 
-	callCount := CallCount{name,1}
+	callCount := CallCount{name, 1}
 	stub.callCount = append(stub.callCount, callCount)
 }

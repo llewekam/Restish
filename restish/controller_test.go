@@ -6,7 +6,7 @@ import (
 )
 
 // Controller Stub object
-type ControllerStub struct{
+type ControllerStub struct {
 	assertion.Stuber
 }
 
@@ -44,7 +44,7 @@ func (stub *ControllerStub) Delete(resource *Resource) (*Resource, StatusCode) {
 }
 
 // Test the default controller object. Must ensure we always get a Not Implemented Status as a response. For all action calls
-func TestController (test *testing.T) {
+func TestController(test *testing.T) {
 	var status StatusCode
 
 	assert := assertion.Assertion{test}

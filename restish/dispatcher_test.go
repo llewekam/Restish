@@ -93,4 +93,3 @@ func TestRequestDelete(test *testing.T) {
 	assert.AssertStubCall(stubController, "Update", 0)
 	assert.AssertStubCall(stubController, "Delete", 1)
 }
-

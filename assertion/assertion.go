@@ -2,8 +2,8 @@
 package assertion
 
 import (
-	"testing"
 	"reflect"
+	"testing"
 )
 
 type Assertion struct {
