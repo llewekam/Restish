@@ -1,14 +1,6 @@
 // Restish package.
 package restish
 
-// A REST Resource. A Resource can be dispatched to Handlers and Controllers for processing. A Resource is always
-// returned from a successful Dispatch
-type Resource struct {
-	Self       string
-	Properties map[string]string
-	Status     StatusCode
-}
-
 // Contains the Resource Status Codes. Normally used to define the HTTP status code associated with the resource once
 // processing is complete.
 type StatusCode struct {
@@ -31,24 +23,14 @@ var (
 	StatusNotFound       = StatusCode{404, "Not Found"}
 	StatusServerError    = StatusCode{500, "Internal Server Error"}
 	StatusNotImplemented = StatusCode{501, "Not Implemented"}
-	StatusTeapot = StatusCode{418, "I'm a teapot"}
+	StatusTeapot         = StatusCode{418, "I'm a teapot"}
 )
 
 var (
 	// All the Endpoint dispatchers
-	dispatchers = map[string]Dispatcher{}
+	dispatchers     = map[string]Dispatcher{}
 	defaultDispatch Dispatcher
 )
-
-// Create a new Resource
-func NewResource(self string) *Resource {
-	var resource *Resource
-	resource = new(Resource)
-	resource.Self = self
-	resource.Status = StatusOk
-
-	return resource
-}
 
 // Add a route to the dispatch set.
 func AddRoute(dispatcher Dispatcher, endpoint string) {
@@ -62,10 +44,10 @@ func SetDefaultDispatch(dispatch Dispatcher) {
 
 // Find the dispatcher responsible for the provided resource
 func GetDispatch(resource *Resource) (dispatch Dispatcher, error error) {
-	route := resource.Self
+	route := resource.Self()
 
-	if nil != dispatchers[route] {
-		dispatch = dispatchers[route]
+	if nil != dispatchers[route.Href] {
+		dispatch = dispatchers[route.Href]
 	} else {
 		if nil != defaultDispatch {
 			dispatch = defaultDispatch
@@ -76,5 +58,3 @@ func GetDispatch(resource *Resource) (dispatch Dispatcher, error error) {
 
 	return
 }
-
-
