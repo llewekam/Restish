@@ -1,6 +1,8 @@
 // Restish package.
 package restish
 
+import "net/http"
+
 // Contains the Resource Status Codes. Normally used to define the HTTP status code associated with the resource once
 // processing is complete.
 type StatusCode struct {
@@ -32,29 +34,62 @@ var (
 	defaultDispatch Dispatcher
 )
 
-// Add a route to the dispatch set.
-func AddRoute(dispatcher Dispatcher, endpoint string) {
-	dispatchers[endpoint] = dispatcher
+// Add a new controller to the dispatcher
+func AddController(controller Controller, endpoint string) {
+	dispatchers[endpoint] = &Dispatch{controller}
 }
 
-// Set the error dispatcher. Used when dispatcher cannot be found
-func SetDefaultDispatch(dispatch Dispatcher) {
-	defaultDispatch = dispatch
+// Add the default controller. Used when a matching controller cannot be found
+func AddDefaultController(controller Controller) {
+	defaultDispatch = &Dispatch{controller}
 }
 
 // Find the dispatcher responsible for the provided resource
-func GetDispatch(resource *Resource) (dispatch Dispatcher, error error) {
-	route := resource.Self()
+func GetDispatch(resource *Resource) (Dispatcher, error) {
+	route := resource.Self
 
-	if nil != dispatchers[route.Href] {
-		dispatch = dispatchers[route.Href]
-	} else {
-		if nil != defaultDispatch {
-			dispatch = defaultDispatch
-		} else {
-			error = new(DispatchError)
-		}
+	if dispatch, ok := dispatchers[route.Href]; ok {
+		return dispatch, nil
 	}
 
-	return
+	if nil == defaultDispatch {
+		return nil, new(DispatchError)
+	}
+
+	return defaultDispatch, nil
+}
+
+// Convert an HTTP request into a rest resource ready for processing
+func RequestResource(request *http.Request) *Resource {
+	resource := NewResource(request.RequestURI)
+
+	return resource
+}
+
+// Convert a Resource into a raw Response ready to be converted into the http response string (json/xml/etc)
+func ResourceResponse(resource *Resource) map[string]interface{} {
+	response := map[string]interface {} {
+		"@xmlns": resource.Type,
+		"@xmlns:atom": "http://www.w3.org/2005/Atom",
+	}
+
+	links := []map[string]string{}
+
+	// Add links to the response
+	for _, link := range resource.Links {
+		links = append(links, map[string]string{
+			"@rel":  link.Rel,
+			"@href": link.Href,
+			"@type": link.Type,
+		})
+	}
+	response["atom:links"] = links
+
+	// Add properties to the response
+	for key, property := range resource.Properties {
+		response[key] = property
+	}
+
+	return response
+
 }

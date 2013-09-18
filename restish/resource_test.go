@@ -28,8 +28,8 @@ func TestResourceSelf(test *testing.T) {
 	resource := new(Resource)
 	resource.AddLink("self", "/url", "application/vnd")
 
-	assert.AssertEqual(resource.Self().Href, expected.Href, "Href does not match")
-	assert.AssertEqual(resource.Self().Rel, expected.Rel, "Rel does not match")
-	assert.AssertEqual(resource.Self().Type, expected.Type, "Type does not match")
+	assert.AssertEqual(resource.Self.Href, expected.Href, "Href does not match")
+	assert.AssertEqual(resource.Self.Rel, expected.Rel, "Rel does not match")
+	assert.AssertEqual(resource.Self.Type, expected.Type, "Type does not match")
 
 }

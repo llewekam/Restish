@@ -13,13 +13,6 @@ type Dispatch struct {
 	Controller
 }
 
-// Create a new dispatcher
-func NewDispatch(controller Controller) *Dispatch {
-	dispatch := Dispatch{controller}
-
-	return &dispatch
-}
-
 // Dispatch the resource to the action controller function.
 func (handler *Dispatch) Request(resource *Resource, action string) (*Resource, StatusCode) {
 	handledResource := resource
